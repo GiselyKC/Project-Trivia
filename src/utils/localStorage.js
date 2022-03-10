@@ -1,13 +1,13 @@
-const saveLocalStorage = (key, data) => {
+export const saveLocalStorage = (key, data) => {
   localStorage.setItem(key, JSON.stringify(data));
 };
 
-const returnLocalStorage = (key) => {
+export const returnLocalStorage = (key) => {
   const getResult = localStorage.getItem(key) || '[]';
   return JSON.parse(getResult);
 };
 
-export default {
-  saveLocalStorage,
-  returnLocalStorage,
-};
+// export {
+//   saveLocalStorage,
+//   returnLocalStorage,
+// };

@@ -3,7 +3,7 @@ export default async function getRequestTrivia() {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    return data;
+    return data.token;
   } catch (error) {
     console.log(error);
   }

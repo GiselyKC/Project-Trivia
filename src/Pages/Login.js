@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { userToken } from '../Redux/actions';
 import getRequestTrivia from '../services/api';
-import saveLocalStorage from '../utils/localStorage';
+import { saveLocalStorage } from '../utils/localStorage';
 
 class Login extends Component {
   state= {
@@ -32,8 +35,11 @@ class Login extends Component {
     this.setState({
       redirect: true,
     });
-    await getRequestTrivia();
-    const getStorageToken = saveLocalStorage('token');
+    const getToken = await getRequestTrivia();
+    console.log(getRequestTrivia());
+    saveLocalStorage('token', getToken);
+    const { tokenUser } = this.props;
+    tokenUser(getToken);
   }
 
   render() {
@@ -72,4 +78,12 @@ class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  tokenUser: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  tokenUser: (value) => dispatch(userToken(value)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
