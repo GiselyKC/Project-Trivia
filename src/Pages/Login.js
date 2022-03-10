@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
+import getRequestTrivia from '../services/api';
+import saveLocalStorage from '../utils/localStorage';
 
 class Login extends Component {
   state= {
     disabled: true,
     name: '',
     email: '',
+    redirect: false,
   }
 
   handleChange = ({ target }) => {
     const { name, value } = target;
     this.setState({
       [name]: value,
-    }, () => this.handleClick());
+    }, () => this.validate());
   }
 
-  handleClick = () => {
+  validate = () => {
     const { name, email } = this.state;
     if (name !== '' && email !== '') {
       this.setState({
@@ -23,9 +27,22 @@ class Login extends Component {
     }
   }
 
+  handleClick = async (event) => {
+    event.preventDefault();
+    this.setState({
+      redirect: true,
+    });
+    await getRequestTrivia();
+    const getStorageToken = saveLocalStorage('token');
+  }
+
   render() {
-    const { disabled } = this.state;
-    const { handleChange } = this;
+    const { disabled, redirect } = this.state;
+    const { handleChange, handleClick } = this;
+
+    if (redirect) {
+      return <Redirect to="/jogo" />;
+    }
     return (
       <form>
         <input
@@ -46,6 +63,7 @@ class Login extends Component {
           data-testid="btn-play"
           type="submit"
           disabled={ disabled }
+          onClick={ handleClick }
         >
           Play
         </button>
