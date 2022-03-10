@@ -44,6 +44,7 @@ class Login extends Component {
 
   render() {
     const { disabled, redirect } = this.state;
+    const { history } = this.props;
     const { handleChange, handleClick } = this;
 
     if (redirect) {
@@ -73,12 +74,22 @@ class Login extends Component {
         >
           Play
         </button>
+        <button
+          data-testid="btn-settings"
+          type="button"
+          onClick={ () => history.push('/settings') }
+        >
+          Settings
+        </button>
       </form>
     );
   }
 }
 
 Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   tokenUser: PropTypes.func.isRequired,
 };
 
