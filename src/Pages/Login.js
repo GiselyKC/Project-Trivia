@@ -89,7 +89,7 @@ class Login extends Component {
 Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
-  }).isRequired,
+  }),
   tokenUser: PropTypes.func.isRequired,
 };
 
