@@ -10,7 +10,10 @@ const INITIAL_STATE = {
 const userToken = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case USER_TOKEN:
-    return { token: action.payload.token, name: action.payload.name, email: action.payload.email };
+    return {
+      token: action.payload.token,
+      name: action.payload.name,
+      email: action.payload.email };
   default:
     return state;
   }
