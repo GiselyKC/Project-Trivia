@@ -1,9 +1,36 @@
 import React, { Component } from 'react';
+import { getGameTrivia } from '../services/api';
+import CardGame from '../components/CardGame';
 
-export default class Jogo extends Component {
+class Jogo extends Component {
+  state = {
+    results: [],
+  }
+
+  async componentDidMount() {
+    const getApi = await getGameTrivia();
+    console.log(getApi);
+    this.setState({
+      results: getApi,
+    });
+  }
+
   render() {
+    const { results } = this.state;
+
     return (
-      <div>Jogo</div>
+      <div>
+        <h1>Jogo</h1>
+        {
+          results.map((result, index) => (
+            <div key={ index }>
+              <CardGame card={ result } />
+            </div>
+          ))
+        }
+      </div>
     );
   }
 }
+
+export default Jogo;
