@@ -36,11 +36,6 @@ export default class CardGame extends Component {
             ))
           }
         </div>
-        <button
-          type="button"
-        >
-          Próximo
-        </button>
       </div>
     );
   }
