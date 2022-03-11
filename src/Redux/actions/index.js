@@ -1,6 +1,10 @@
 export const USER_TOKEN = 'USER_TOKEN';
 
-export const userToken = (payload) => ({
+export const userToken = (value = {}) => ({
   type: USER_TOKEN,
-  payload,
+  payload: {
+    token: value.token,
+    name: value.name,
+    email: value.email,
+  },
 });
