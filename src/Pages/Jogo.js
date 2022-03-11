@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getGameTrivia } from '../services/api';
 import CardGame from '../components/CardGame';
+import Header from './Header';
 
 class Jogo extends Component {
   state = {
@@ -38,7 +39,6 @@ class Jogo extends Component {
 
   handleClick = () => {
     this.renderRandom();
-    // if (!prevStateIndex.includes(index)) this.renderRandom();
   }
 
   render() {
@@ -46,8 +46,10 @@ class Jogo extends Component {
     return (
       <div>
         <h1>Jogo</h1>
+        <Header />
         {render ? <CardGame card={ results[index] } /> : <p>Loading...</p>}
-        {render ? <button type="submit" onClick={ this.handleClick }> Próximo</button> : null }
+        {render
+          ? <button type="submit" onClick={ this.handleClick }> Próximo</button> : null }
       </div>
     );
   }
