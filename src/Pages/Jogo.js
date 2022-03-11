@@ -5,14 +5,13 @@ import CardGame from '../components/CardGame';
 class Jogo extends Component {
   state = {
     results: [],
-    // cardQuestion: {},
     render: false,
     index: 0,
+    // prevStateIndex: [],
   }
 
   async componentDidMount() {
     const getApi = await getGameTrivia();
-    // console.log(getApi);
     this.setState({
       results: getApi,
     }, () => {
@@ -21,12 +20,25 @@ class Jogo extends Component {
   }
 
   renderRandom =() => {
-    const multiplicador = 4;
-    const randomIndex = (Math.random() * multiplicador).toFixed(0);
-    this.setState({
-      render: true,
-      index: randomIndex,
+    const { index } = this.state;
+    this.setState({ render: false }, () => {
+      const multiplicador = 4;
+      const randomIndex = Number(Math.random() * multiplicador).toFixed(0);
+      if (index === 0) {
+        this.setState({
+          render: true,
+          index: randomIndex,
+        });
+      } this.setState({
+        render: true,
+        index: index === multiplicador ? index * 0 : index + 1,
+      });
     });
+  }
+
+  handleClick = () => {
+    this.renderRandom();
+    // if (!prevStateIndex.includes(index)) this.renderRandom();
   }
 
   render() {
@@ -35,7 +47,7 @@ class Jogo extends Component {
       <div>
         <h1>Jogo</h1>
         {render ? <CardGame card={ results[index] } /> : <p>Loading...</p>}
-        {render ? <button type="button"> Próximo</button> : null }
+        {render ? <button type="submit" onClick={ this.handleClick }> Próximo</button> : null }
       </div>
     );
   }
