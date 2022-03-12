@@ -1,58 +1,72 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { getGameTrivia } from '../services/api';
+import { connect } from 'react-redux';
+import getRequestTrivia, { getGameTrivia } from '../services/api';
 import CardGame from '../components/CardGame';
 import Header from './Header';
+import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
+import { userToken } from '../Redux/actions';
 
 class Jogo extends Component {
   state = {
     results: [],
     render: false,
-    index: 0,
-    // prevStateIndex: [],
   }
 
   async componentDidMount() {
-    const getApi = await getGameTrivia();
-    this.setState({
-      results: getApi,
-    }, () => {
-      this.renderRandom();
-    });
-  }
-
-  renderRandom =() => {
-    const { index } = this.state;
-    this.setState({ render: false }, () => {
-      const multiplicador = 4;
-      const randomIndex = Number(Math.random() * multiplicador).toFixed(0);
-      if (index === 0) {
-        this.setState({
-          render: true,
-          index: randomIndex,
-        });
-      } this.setState({
-        render: true,
-        index: index === multiplicador ? index * 0 : index + 1,
+    const errorNumber = 3;
+    const getToken = await returnLocalStorage('token');
+    // console.log('TOKEN DEVERIA', getToken);
+    const getApi = await getGameTrivia(getToken);
+    // console.log('XABLAU', getApi);
+    if (getApi.response_code === errorNumber) {
+      const newToken = await getRequestTrivia();
+      // console.log('NOVO TOKEN', newToken);
+      const newGetApi = await getGameTrivia(newToken);
+      saveLocalStorage('token', newToken);
+      this.setState({
+        results: newGetApi.results,
+      }, () => {
+        // this.renderRandom();
       });
+      const { tokenUser } = this.props;
+      const result = {
+        token: newToken,
+      };
+      tokenUser(result);
+    }
+    this.setState({
+      results: getApi.results,
+      render: true,
     });
   }
 
-  handleClick = () => {
-    this.renderRandom();
+  handleClick =() => {
+    this.setState({ render: false });
+    this.setState({
+      render: true,
+    });
   }
 
   render() {
-    const { results, render, index } = this.state;
+    const { results, render } = this.state;
     return (
       <div>
         <h1>Jogo</h1>
         <Header />
-        {render ? <CardGame card={ results[index] } /> : <p>Loading...</p>}
-        {render
-          ? <button type="submit" onClick={ this.handleClick }> Próximo</button> : null }
+        {render && results.length > 0
+          ? <CardGame results={ results } /> : <p>Loading...</p>}
       </div>
     );
   }
 }
 
-export default Jogo;
+Jogo.propTypes = {
+  tokenUser: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  tokenUser: (value) => dispatch(userToken(value)),
+});
+
+export default connect(null, mapDispatchToProps)(Jogo);

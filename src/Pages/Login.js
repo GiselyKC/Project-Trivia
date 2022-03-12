@@ -33,11 +33,8 @@ class Login extends Component {
   handleClick = async (event) => {
     const { name, email } = this.state;
     event.preventDefault();
-    this.setState({
-      redirect: true,
-    });
     const getToken = await getRequestTrivia();
-    console.log(getRequestTrivia());
+    // console.log('GET TOKEN, LOGIN', getToken);
     saveLocalStorage('token', getToken);
     const { tokenUser } = this.props;
     const result = {
@@ -46,6 +43,9 @@ class Login extends Component {
       email,
     };
     tokenUser(result);
+    this.setState({
+      redirect: true,
+    });
   }
 
   render() {
