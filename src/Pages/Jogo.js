@@ -1,13 +1,72 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import getRequestTrivia, { getGameTrivia } from '../services/api';
+import CardGame from '../components/CardGame';
 import Header from './Header';
+import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
+import { userToken } from '../Redux/actions';
 
-export default class Jogo extends Component {
+class Jogo extends Component {
+  state = {
+    results: [],
+    render: false,
+  }
+
+  async componentDidMount() {
+    const errorNumber = 3;
+    const getToken = await returnLocalStorage('token');
+    // console.log('TOKEN DEVERIA', getToken);
+    const getApi = await getGameTrivia(getToken);
+    // console.log('XABLAU', getApi);
+    if (getApi.response_code === errorNumber) {
+      const newToken = await getRequestTrivia();
+      // console.log('NOVO TOKEN', newToken);
+      const newGetApi = await getGameTrivia(newToken);
+      saveLocalStorage('token', newToken);
+      this.setState({
+        results: newGetApi.results,
+      }, () => {
+        // this.renderRandom();
+      });
+      const { tokenUser } = this.props;
+      const result = {
+        token: newToken,
+      };
+      tokenUser(result);
+    }
+    this.setState({
+      results: getApi.results,
+      render: true,
+    });
+  }
+
+  handleClick =() => {
+    this.setState({ render: false });
+    this.setState({
+      render: true,
+    });
+  }
+
   render() {
+    const { results, render } = this.state;
     return (
       <div>
-        <div>Jogo</div>
+        <h1>Jogo</h1>
         <Header />
+        {render && results.length > 0
+          ? <CardGame results={ results } /> : <p>Loading...</p>}
       </div>
     );
   }
 }
+
+Jogo.propTypes = {
+  tokenUser: PropTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  tokenUser: (value) => dispatch(userToken(value)),
+});
+
+export default connect(null, mapDispatchToProps)(Jogo);
