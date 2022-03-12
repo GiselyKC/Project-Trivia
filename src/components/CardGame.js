@@ -19,7 +19,7 @@ componentDidMount() {
     const { results } = this.props;
     console.log(results);
     const card = results[indexCard];
-    console.log(card);
+    // console.log(card);
     this.setState({
       card,
     });
