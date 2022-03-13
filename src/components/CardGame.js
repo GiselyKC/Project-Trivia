@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 export default class CardGame extends Component {
-state ={
+state = {
   shufleArray: [],
   indexCard: 0,
   card: {},
+  resultQuestion: '',
+  score: 0,
 }
 
 componentDidMount() {
@@ -17,7 +19,7 @@ componentDidMount() {
   arrayOriginal = () => {
     const { indexCard } = this.state;
     const { results } = this.props;
-    console.log(results);
+    // console.log(results);
     const card = results[indexCard];
     // console.log(card);
     this.setState({
@@ -45,6 +47,28 @@ componentDidMount() {
     }));
   }
 
+  handleClickQuestions = ({ target: { value } }) => {
+    const { score, card: { difficulty } } = this.state;
+    const timer = 10;
+    const NUMBER = 10;
+    const easyNumber = 1;
+    const mediumNumber = 2;
+    const hardNumber = 3;
+    if (value === 'correct-answer' && difficulty === 'easy') {
+      const scoreQuestions = NUMBER + (timer * easyNumber);
+      this.setState({ score: score + scoreQuestions });
+    } if (value === 'correct-answer' && difficulty === 'medium') {
+      const scoreQuestions = NUMBER + (timer * mediumNumber);
+      this.setState({ score: score + scoreQuestions });
+    } if (value === 'correct-answer' && difficulty === 'hard') {
+      const scoreQuestions = NUMBER + (timer * hardNumber);
+      this.setState({ score: score + scoreQuestions });
+    }
+    this.setState({
+      resultQuestion: value,
+    });
+  }
+
   render() {
     const { shufleArray, card } = this.state;
     return (
@@ -67,14 +91,19 @@ componentDidMount() {
                 <button
                   data-testid="correct-answer"
                   type="button"
+                  value={ question.dataTest }
+                  onClick={ this.handleClickQuestions }
                 >
                   { question.answer }
-                </button>);
+                </button>
+              );
             } return (
               <button
                 data-testid={ question.dataTest }
                 type="button"
                 key={ question.key }
+                value={ question.dataTest }
+                onClick={ this.handleClickQuestions }
               >
                 { question.answer }
               </button>

@@ -7,14 +7,6 @@ export const returnLocalStorage = (key) => {
   return JSON.parse(getResult);
 };
 
-export function setLocalStorageScore(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
-}
-
-export function getLocalStorageScore(key) {
-  return JSON.parse(localStorage.getItem(key));
-}
-
 // export {
 //   saveLocalStorage,
 //   returnLocalStorage,
