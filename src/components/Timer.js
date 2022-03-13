@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { setTime } from '../Redux/actions';
 
 const TIME_LIMIT = -1;
 const ONE_SECOND = 1000;
 
-export default class Timer extends Component {
+class Timer extends Component {
   state = {
     seconds: 10,
   };
@@ -13,20 +15,19 @@ export default class Timer extends Component {
     this.countDown();
   }
 
-  componentDidUpdate() {
-    const { newTimer } = this.props;
-    console.log('oi', newTimer);
+  stateUptade = () => {
     const { seconds } = this.state;
+    const { newTimer, dispatch } = this.props;
+    if (seconds === 0) {
+      dispatch(setTime(0));
+      clearInterval(this.intervalId);
+    }
+    console.log(this.props);
+    if (newTimer) this.setState({ seconds: 10 }, () => {});
     if (seconds === TIME_LIMIT) {
-      if (newTimer) this.setState({ seconds: 10 });
-      // newTimer > 0 ? return this.setState({
       return this.setState({ seconds: 0 });
     }
   }
-
-  // componentWillUnmount() {
-  //   clearInterval(this.intervalId);
-  // }
 
     countDown = () => {
       this.intervalId = setInterval(() => {
@@ -38,7 +39,7 @@ export default class Timer extends Component {
 
     render() {
       const { seconds } = this.state;
-      const { newTimer } = this.props;
+      this.stateUptade();
       return (
         <div>
           <p>
@@ -51,5 +52,8 @@ export default class Timer extends Component {
 }
 
 Timer.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   newTimer: PropTypes.number.isRequired,
 };
+
+export default connect()(Timer);
