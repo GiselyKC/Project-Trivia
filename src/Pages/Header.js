@@ -2,8 +2,15 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import md5 from 'crypto-js/md5';
 import { connect } from 'react-redux';
+import { returnLocalStorage } from '../utils/localStorage';
 
 class Header extends Component {
+  componentDidMount() {
+    const getLocalStorage = returnLocalStorage('ranking')[2].score;
+    console.log('test', getLocalStorage);
+
+  }
+
   queryGravatar = () => {
     const { email } = this.props;
     const convertedEmail = md5(email).toString();

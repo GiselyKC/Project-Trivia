@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { userScore } from '../Redux/actions';
+import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 
-export default class CardGame extends Component {
+class CardGame extends Component {
 state = {
   shufleArray: [],
   indexCard: 0,
@@ -67,6 +70,13 @@ componentDidMount() {
     this.setState({
       resultQuestion: value,
     });
+    const returnLS = returnLocalStorage('ranking');
+    const { name, picture } = this.props;
+    saveLocalStorage('ranking', [...returnLS, {
+      name,
+      picture,
+      score,
+    }]);
   }
 
   render() {
@@ -118,4 +128,19 @@ componentDidMount() {
 
 CardGame.propTypes = {
   results: PropTypes.arrayOf.isRequired,
+  name: PropTypes.string.isRequired,
+  picture: PropTypes.string.isRequired,
+  // score: PropTypes.number.isRequired,
 };
+
+const mapStateToProps = (state) => ({
+  name: state.player.name,
+  picture: state.player.gravatarEmail,
+
+});
+
+// const mapDispatchToProps = (dispatch) => {
+//   score: (value) => dispatch(userScore(value))
+// };
+
+export default connect(mapStateToProps, null)(CardGame);
