@@ -2,14 +2,18 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import md5 from 'crypto-js/md5';
 import { connect } from 'react-redux';
-import { returnLocalStorage } from '../utils/localStorage';
+// import { returnLocalStorage } from '../utils/localStorage';
 
 class Header extends Component {
-  componentDidMount() {
-    const getLocalStorage = returnLocalStorage('ranking')[2].score;
-    console.log('test', getLocalStorage);
-
+  state = {
+    returnScore: [],
   }
+
+  // componentDidMount() {
+  //   const getLocalStorage = returnLocalStorage('ranking');
+  //   console.log('test', getLocalStorage);
+  //   this.setState({ returnScore: getLocalStorage });
+  // }
 
   queryGravatar = () => {
     const { email } = this.props;
@@ -18,7 +22,8 @@ class Header extends Component {
   }
 
   render() {
-    const { name } = this.props;
+    const { name, scoreGame } = this.props;
+    console.log(scoreGame);
     return (
       <div>
         <img
@@ -27,7 +32,7 @@ class Header extends Component {
           data-testid="header-profile-picture"
         />
         <p data-testid="header-player-name">{name}</p>
-        <p data-testid="header-score">0</p>
+        <p data-testid="header-score">{ scoreGame }</p>
       </div>
     );
   }
@@ -36,11 +41,13 @@ class Header extends Component {
 Header.propTypes = {
   email: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  scoreGame: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   name: state.player.name,
   email: state.player.gravatarEmail,
+  scoreGame: state.player.score,
 });
 
 export default connect(mapStateToProps, null)(Header);

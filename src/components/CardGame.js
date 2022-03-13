@@ -60,10 +60,10 @@ componentDidMount() {
     if (value === 'correct-answer' && difficulty === 'easy') {
       const scoreQuestions = NUMBER + (timer * easyNumber);
       this.setState({ score: score + scoreQuestions });
-    } if (value === 'correct-answer' && difficulty === 'medium') {
+    } else if (value === 'correct-answer' && difficulty === 'medium') {
       const scoreQuestions = NUMBER + (timer * mediumNumber);
       this.setState({ score: score + scoreQuestions });
-    } if (value === 'correct-answer' && difficulty === 'hard') {
+    } else if (value === 'correct-answer' && difficulty === 'hard') {
       const scoreQuestions = NUMBER + (timer * hardNumber);
       this.setState({ score: score + scoreQuestions });
     }
@@ -71,12 +71,13 @@ componentDidMount() {
       resultQuestion: value,
     });
     const returnLS = returnLocalStorage('ranking');
-    const { name, picture } = this.props;
+    const { name, picture, scoreGame } = this.props;
     saveLocalStorage('ranking', [...returnLS, {
       name,
       picture,
       score,
     }]);
+    scoreGame(score);
   }
 
   render() {
@@ -130,7 +131,7 @@ CardGame.propTypes = {
   results: PropTypes.arrayOf.isRequired,
   name: PropTypes.string.isRequired,
   picture: PropTypes.string.isRequired,
-  // score: PropTypes.number.isRequired,
+  scoreGame: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -139,8 +140,8 @@ const mapStateToProps = (state) => ({
 
 });
 
-// const mapDispatchToProps = (dispatch) => {
-//   score: (value) => dispatch(userScore(value))
-// };
+const mapDispatchToProps = (dispatch) => ({
+  scoreGame: (value) => dispatch(userScore(value)),
+});
 
-export default connect(mapStateToProps, null)(CardGame);
+export default connect(mapStateToProps, mapDispatchToProps)(CardGame);
