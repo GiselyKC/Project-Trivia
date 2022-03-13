@@ -1,19 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import Timer from './Timer';
 
 export default class CardGame extends Component {
 state ={
   shufleArray: [],
   indexCard: 0,
   card: {},
-  timer: '',
-  disabled: false,
+  nextTime: false,
 }
 
 componentDidMount() {
   this.setState({
     shufleArray: this.arrayOriginal(),
-  }, this.count(duration, display));
+  });
 }
 
   arrayOriginal = () => {
@@ -42,45 +42,18 @@ componentDidMount() {
     const { indexCard } = this.state;
     this.setState({
       indexCard: indexCard + 1,
+      nextTime: true,
     }, () => this.setState({
       shufleArray: this.arrayOriginal(),
     }));
   }
 
-  count = (duration, display) => {
-    const duration = 30;
-    const timer = setInterval(function() {
-      // const numberOne = 60;
-      // const numberTwo = 0;
-      // const numberThree = 1000;
-
-      const second = parseInt(duration, 10) - 1;
-      duration = second;
-
-      // secondsTime = seconds < numberTwo ? '0' + seconds : seconds;
-      if (second === 0) {
-        this.setState({
-          disabled: true,
-      });
-
-      // display.textContent = '00' + ':' + secondsTime;
-
-      // if (--timer < 0) {
-      //   timer = duration;
-      // }
-    }, 1000);
-  };
-
   render() {
-    const { shufleArray, card } = this.state;
-    const { count } = this;
+    const { shufleArray, card, disabled, nextTime } = this.state;
     return (
       <div>
-        <p>
-          Timer:
-          { count }
-        </p>
         <h1>CardGame</h1>
+        <Timer newTimer={ nextTime } />
         <p
           data-testid="question-category"
         >
@@ -98,17 +71,20 @@ componentDidMount() {
                 <button
                   data-testid="correct-answer"
                   type="button"
+                  disabled={ disabled }
                 >
                   { question.answer }
                 </button>);
             } return (
-              <button
-                data-testid={ question.dataTest }
-                type="button"
-                key={ question.key }
-              >
-                { question.answer }
-              </button>
+              <div key={ question.key }>
+                <button
+                  data-testid={ question.dataTest }
+                  type="button"
+                  disabled={ disabled }
+                >
+                  { question.answer }
+                </button>
+              </div>
             );
           })}
         </div>
