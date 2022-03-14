@@ -14,8 +14,9 @@ const userToken = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case USER_TOKEN:
     return {
+      ...state,
       token: action.payload.token,
-      player: { name: action.payload.name, gravatarEmail: action.payload.email },
+      player: { ...state.player, name: action.payload.name, gravatarEmail: action.payload.email },
     };
   case USER_SCORE:
     return {
