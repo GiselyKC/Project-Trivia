@@ -66,6 +66,7 @@ class Jogo extends Component {
 }
 
 Jogo.propTypes = {
+  history: PropTypes.objectOf.isRequired,
   tokenUser: PropTypes.func.isRequired,
 };
 
