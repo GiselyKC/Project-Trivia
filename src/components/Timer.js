@@ -22,7 +22,6 @@ class Timer extends Component {
       dispatch(setTime(0));
       clearInterval(this.intervalId);
     }
-    console.log(this.props);
     if (newTimer) this.setState({ seconds: 30 }, () => {});
     if (seconds === TIME_LIMIT) {
       return this.setState({ seconds: 0 });

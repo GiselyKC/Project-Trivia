@@ -15,6 +15,7 @@ export const userToken = (value = {}) => ({
 export const userScore = (payload) => ({
   type: USER_SCORE,
   payload,
+  rightQuestion: 1,
 });
 export const userImg = (payload) => ({
   type: USER_IMG,

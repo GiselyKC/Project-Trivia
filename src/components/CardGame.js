@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
+import './CardGame.css';
 
 class CardGame extends Component {
 state = {
@@ -20,12 +21,6 @@ componentDidMount() {
     shufleArray: this.arrayOriginal(),
   });
 }
-
-  questionOnClick = ({ target }) => {
-    if (target.id === 'correct') {
-      target.className = 'correctQuestion';
-    } target.className = 'wrongQuestion';
-  }
 
   arrayOriginal = () => {
     const { indexCard } = this.state;
@@ -100,7 +95,6 @@ componentDidMount() {
   }
 
   render() {
-    console.log(this.props);
     const { shufleArray, card, nextTime, disabled } = this.state;
     const { time } = this.props;
     return (
@@ -126,20 +120,17 @@ componentDidMount() {
             if (question.dataTest === 'correct_answer') {
               return (
                 <button
-                  id="correct"
                   data-testid="correct-answer"
                   type="button"
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
-                  // onClick={ this.questionOnClick }
                 >
                   { question.answer }
                 </button>
               );
             } return (
               <button
-                id="wrong"
                 data-testid={ question.dataTest }
                 // onClick={ this.questionOnClick }
                 type="button"

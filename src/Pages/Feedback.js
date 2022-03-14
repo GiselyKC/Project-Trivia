@@ -1,8 +1,10 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import Header from './Header';
 
-export default class Feedback extends React.Component {
+class Feedback extends React.Component {
   state = {
     redirectPlay: false,
     redirectRanking: false,
@@ -23,8 +25,10 @@ export default class Feedback extends React.Component {
   }
 
   render() {
+    const numberAlternatives = 3;
     const { redirectPlay, redirectRanking } = this.state;
     const { handleButtonPlay, handleButtonRanking } = this;
+    const { points, score } = this.props;
 
     if (redirectPlay) {
       return <Redirect to="/" />;
@@ -37,7 +41,15 @@ export default class Feedback extends React.Component {
       <div>
         <h1>Feedback</h1>
         <Header />
-        <h2 data-testid="feedback-text">Esse foi o seu Resultado no Jogo</h2>
+
+        {
+          ((points < numberAlternatives)
+            && <h2 data-testid="feedback-text">Could be better...</h2>)
+              || ((points >= numberAlternatives)
+                && <h2 data-testid="feedback-text">Well Done!</h2>)
+        }
+        <p data-testid="feedback-total-question">{points}</p>
+        <p data-testid="feedback-total-score">{score}</p>
         <button
           type="button"
           data-testid="btn-play-again"
@@ -56,3 +68,15 @@ export default class Feedback extends React.Component {
     );
   }
 }
+
+Feedback.propTypes = {
+  points: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  points: state.player.assertions,
+  score: state.player.score,
+});
+
+export default connect(mapStateToProps, null)(Feedback);
