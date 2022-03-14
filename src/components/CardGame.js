@@ -1,11 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Timer from './Timer';
+import { setTime } from '../Redux/actions';
 
-export default class CardGame extends Component {
+class CardGame extends Component {
 state ={
   shufleArray: [],
   indexCard: 0,
   card: {},
+  nextTime: false,
 }
 
 componentDidMount() {
@@ -19,9 +23,9 @@ componentDidMount() {
     const { results } = this.props;
     console.log(results);
     const card = results[indexCard];
-    console.log(card);
     this.setState({
       card,
+      nextTime: false,
     });
     const incorrects = card.incorrect_answers.map((question, index) => ({
       answer: question,
@@ -37,6 +41,12 @@ componentDidMount() {
   }
 
   handleClick = () => {
+    const seconds = 10;
+    const { dispatch } = this.props;
+    dispatch(setTime(seconds));
+    this.setState({
+      nextTime: true,
+    });
     const { indexCard } = this.state;
     this.setState({
       indexCard: indexCard + 1,
@@ -45,11 +55,22 @@ componentDidMount() {
     }));
   }
 
+  buttonDisable = () => {
+    const { time } = this.props;
+    return (time === 0);
+  }
+
   render() {
-    const { shufleArray, card } = this.state;
+    const { shufleArray, card, nextTime } = this.state;
+    const { time } = this.props;
     return (
       <div>
         <h1>CardGame</h1>
+        {
+          time === 0
+            ? <strong><h2>TEMPO ESGOTADO</h2></strong>
+            : <Timer newTimer={ nextTime } />
+        }
         <p
           data-testid="question-category"
         >
@@ -67,6 +88,7 @@ componentDidMount() {
                 <button
                   data-testid="correct-answer"
                   type="button"
+                  disabled={ this.buttonDisable() }
                 >
                   { question.answer }
                 </button>);
@@ -75,6 +97,7 @@ componentDidMount() {
                 data-testid={ question.dataTest }
                 type="button"
                 key={ question.key }
+                disabled={ this.buttonDisable() }
               >
                 { question.answer }
               </button>
@@ -88,5 +111,12 @@ componentDidMount() {
 }
 
 CardGame.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   results: PropTypes.arrayOf.isRequired,
+  time: PropTypes.number.isRequired,
 };
+const mapStateToProps = (state) => ({
+  time: state.time,
+});
+
+export default connect(mapStateToProps)(CardGame);
