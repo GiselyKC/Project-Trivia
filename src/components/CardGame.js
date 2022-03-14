@@ -50,34 +50,26 @@ componentDidMount() {
     }));
   }
 
-  handleClickQuestions = ({ target: { value } }) => {
+  handleClickQuestions = async ({ target: { value } }) => {
     const { score, card: { difficulty } } = this.state;
+    const { name, picture, scoreGameDispatch } = this.props;
     const timer = 10;
     const NUMBER = 10;
-    const easyNumber = 1;
-    const mediumNumber = 2;
-    const hardNumber = 3;
-    if (value === 'correct-answer' && difficulty === 'easy') {
-      const scoreQuestions = NUMBER + (timer * easyNumber);
-      this.setState({ score: score + scoreQuestions });
-    } else if (value === 'correct-answer' && difficulty === 'medium') {
-      const scoreQuestions = NUMBER + (timer * mediumNumber);
-      this.setState({ score: score + scoreQuestions });
-    } else if (value === 'correct-answer' && difficulty === 'hard') {
-      const scoreQuestions = NUMBER + (timer * hardNumber);
+    const difficultyQuestion = { easy: 1, medium: 2, hard: 3 };
+    const scoreQuestions = NUMBER + (timer * difficultyQuestion[difficulty]);
+    if (value === 'correct-answer') {
+      scoreGameDispatch(scoreQuestions);
       this.setState({ score: score + scoreQuestions });
     }
     this.setState({
       resultQuestion: value,
     });
     const returnLS = returnLocalStorage('ranking');
-    const { name, picture, scoreGame } = this.props;
     saveLocalStorage('ranking', [...returnLS, {
       name,
       picture,
       score,
     }]);
-    scoreGame(score);
   }
 
   render() {
@@ -131,7 +123,7 @@ CardGame.propTypes = {
   results: PropTypes.arrayOf.isRequired,
   name: PropTypes.string.isRequired,
   picture: PropTypes.string.isRequired,
-  scoreGame: PropTypes.number.isRequired,
+  scoreGameDispatch: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -141,7 +133,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  scoreGame: (value) => dispatch(userScore(value)),
+  scoreGameDispatch: (value) => dispatch(userScore(value)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardGame);

@@ -21,7 +21,7 @@ const userToken = (state = INITIAL_STATE, action) => {
   case USER_SCORE:
     return {
       ...state,
-      player: { ...state.player, score: action.payload },
+      player: { ...state.player, score: state.player.score + action.payload },
     };
   default:
     return state;
