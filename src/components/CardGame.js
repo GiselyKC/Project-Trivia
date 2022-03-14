@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { userScore } from '../Redux/actions';
+import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
-import { setTime } from '../Redux/actions';
 
 class CardGame extends Component {
 state = {
@@ -45,8 +44,8 @@ componentDidMount() {
 
   handleClick = () => {
     const seconds = 10;
-    const { dispatch } = this.props;
-    dispatch(setTime(seconds));
+    const { dispatchSetTime } = this.props;
+    dispatchSetTime(seconds);
     this.setState({
       nextTime: true,
     });
@@ -75,11 +74,13 @@ componentDidMount() {
       picture,
       score,
     }]);
-    
+  }
+
   buttonDisable = () => {
     const { time } = this.props;
     return (time === 0);
-}
+  }
+
   render() {
     const { shufleArray, card, nextTime } = this.state;
     const { time } = this.props;
@@ -136,7 +137,7 @@ componentDidMount() {
 }
 
 CardGame.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  dispatchSetTime: PropTypes.func.isRequired,
   results: PropTypes.arrayOf.isRequired,
   name: PropTypes.string.isRequired,
   picture: PropTypes.string.isRequired,
@@ -150,5 +151,6 @@ const mapStateToProps = (state) => ({
 });
 const mapDispatchToProps = (dispatch) => ({
   scoreGameDispatch: (value) => dispatch(userScore(value)),
+  dispatchSetTime: (value) => dispatch(setTime(value)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(CardGame);
