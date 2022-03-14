@@ -50,12 +50,15 @@ class Jogo extends Component {
 
   render() {
     const { results, render } = this.state;
+
     return (
       <div>
-        <h1>Jogo</h1>
-        <Header />
-        {render && results.length > 0
-          ? <CardGame results={ results } /> : <p>Loading...</p>}
+        <div>
+          <h1>Jogo</h1>
+          <Header />
+          {render && results.length > 0
+            ? <CardGame results={ results } /> : <p>Loading...</p>}
+        </div>
       </div>
     );
   }
