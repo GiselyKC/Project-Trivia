@@ -1,4 +1,4 @@
-import { USER_TOKEN } from '../actions';
+import { USER_TOKEN, USER_SCORE } from '../actions';
 
 const INITIAL_STATE = {
   token: '',
@@ -14,6 +14,10 @@ const userToken = (state = INITIAL_STATE, action) => {
       token: action.payload.token,
       name: action.payload.name,
       email: action.payload.email };
+  case USER_SCORE:
+    return { ...state,
+      score: action.payload.score,
+    };
   default:
     return state;
   }
