@@ -1,15 +1,15 @@
-
-import { USER_SCORE, USER_TOKEN, SET_TIME} from '../actions';
+import { USER_SCORE, USER_TOKEN, SET_TIME } from '../actions';
 
 const INITIAL_STATE = {
   token: '',
-  time: 30
+  time: 30,
   player: {
     name: '',
     assertions: '',
     score: 0,
     gravatarEmail: '',
   },
+};
 
 const userToken = (state = INITIAL_STATE, action) => {
   switch (action.type) {
