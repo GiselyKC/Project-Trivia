@@ -9,7 +9,6 @@ state = {
   shufleArray: [],
   indexCard: 0,
   card: {},
-  resultQuestion: '',
   score: 0,
 }
 
@@ -61,9 +60,6 @@ componentDidMount() {
       scoreGameDispatch(scoreQuestions);
       this.setState({ score: score + scoreQuestions });
     }
-    this.setState({
-      resultQuestion: value,
-    });
     const returnLS = returnLocalStorage('ranking');
     saveLocalStorage('ranking', [...returnLS, {
       name,

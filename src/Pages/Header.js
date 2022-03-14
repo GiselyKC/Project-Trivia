@@ -5,16 +5,6 @@ import { connect } from 'react-redux';
 // import { returnLocalStorage } from '../utils/localStorage';
 
 class Header extends Component {
-  state = {
-    returnScore: [],
-  }
-
-  // componentDidMount() {
-  //   const getLocalStorage = returnLocalStorage('ranking');
-  //   console.log('test', getLocalStorage);
-  //   this.setState({ returnScore: getLocalStorage });
-  // }
-
   queryGravatar = () => {
     const { email } = this.props;
     const convertedEmail = md5(email).toString();
@@ -23,7 +13,6 @@ class Header extends Component {
 
   render() {
     const { name, scoreGame } = this.props;
-    console.log(scoreGame);
     return (
       <div>
         <img
