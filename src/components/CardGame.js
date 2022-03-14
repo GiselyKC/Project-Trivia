@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
-// import './Jogo.css';
 
 class CardGame extends Component {
 state = {
