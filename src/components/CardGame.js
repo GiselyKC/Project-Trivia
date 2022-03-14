@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Timer from './Timer';
 import { setTime } from '../Redux/actions';
+import './Jogo.css';
 
 class CardGame extends Component {
 state ={
@@ -17,6 +18,12 @@ componentDidMount() {
     shufleArray: this.arrayOriginal(),
   });
 }
+
+  questionOnClick = ({ target }) => {
+    if (target.id === 'correct') {
+      target.className = 'correctQuestion';
+    } target.className = 'wrongQuestion';
+  }
 
   arrayOriginal = () => {
     const { indexCard } = this.state;
@@ -86,15 +93,19 @@ componentDidMount() {
             if (question.dataTest === 'correct_answer') {
               return (
                 <button
+                  id="correct"
                   data-testid="correct-answer"
                   type="button"
                   disabled={ this.buttonDisable() }
+                  onClick={ this.questionOnClick }
                 >
                   { question.answer }
                 </button>);
             } return (
               <button
+                id="wrong"
                 data-testid={ question.dataTest }
+                onClick={ this.questionOnClick }
                 type="button"
                 key={ question.key }
                 disabled={ this.buttonDisable() }
