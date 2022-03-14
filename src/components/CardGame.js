@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { userScore } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
+import Timer from './Timer';
+import { setTime } from '../Redux/actions';
 
 class CardGame extends Component {
 state = {
@@ -10,6 +12,7 @@ state = {
   indexCard: 0,
   card: {},
   score: 0,
+  nextTime: false,
 }
 
 componentDidMount() {
@@ -23,9 +26,9 @@ componentDidMount() {
     const { results } = this.props;
     // console.log(results);
     const card = results[indexCard];
-    // console.log(card);
     this.setState({
       card,
+      nextTime: false,
     });
     const incorrects = card.incorrect_answers.map((question, index) => ({
       answer: question,
@@ -41,6 +44,12 @@ componentDidMount() {
   }
 
   handleClick = () => {
+    const seconds = 10;
+    const { dispatch } = this.props;
+    dispatch(setTime(seconds));
+    this.setState({
+      nextTime: true,
+    });
     const { indexCard } = this.state;
     this.setState({
       indexCard: indexCard + 1,
@@ -66,13 +75,22 @@ componentDidMount() {
       picture,
       score,
     }]);
-  }
-
+    
+  buttonDisable = () => {
+    const { time } = this.props;
+    return (time === 0);
+}
   render() {
-    const { shufleArray, card } = this.state;
+    const { shufleArray, card, nextTime } = this.state;
+    const { time } = this.props;
     return (
       <div>
         <h1>CardGame</h1>
+        {
+          time === 0
+            ? <strong><h2>TEMPO ESGOTADO</h2></strong>
+            : <Timer newTimer={ nextTime } />
+        }
         <p
           data-testid="question-category"
         >
@@ -92,6 +110,7 @@ componentDidMount() {
                   type="button"
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
+                  disabled={ this.buttonDisable() }
                 >
                   { question.answer }
                 </button>
@@ -103,6 +122,7 @@ componentDidMount() {
                 key={ question.key }
                 value={ question.dataTest }
                 onClick={ this.handleClickQuestions }
+                disabled={ this.buttonDisable() }
               >
                 { question.answer }
               </button>
@@ -116,20 +136,19 @@ componentDidMount() {
 }
 
 CardGame.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   results: PropTypes.arrayOf.isRequired,
   name: PropTypes.string.isRequired,
   picture: PropTypes.string.isRequired,
   scoreGameDispatch: PropTypes.number.isRequired,
+  time: PropTypes.number.isRequired,
 };
-
 const mapStateToProps = (state) => ({
   name: state.player.name,
   picture: state.player.gravatarEmail,
-
+  time: state.time,
 });
-
 const mapDispatchToProps = (dispatch) => ({
   scoreGameDispatch: (value) => dispatch(userScore(value)),
 });
-
 export default connect(mapStateToProps, mapDispatchToProps)(CardGame);
