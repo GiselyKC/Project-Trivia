@@ -50,6 +50,7 @@ class Jogo extends Component {
 
   render() {
     const { results, render } = this.state;
+    const { history } = this.props;
 
     return (
       <div>
@@ -57,7 +58,7 @@ class Jogo extends Component {
           <h1>Jogo</h1>
           <Header />
           {render && results.length > 0
-            ? <CardGame results={ results } /> : <p>Loading...</p>}
+            ? <CardGame history={ history } results={ results } /> : <p>Loading...</p>}
         </div>
       </div>
     );
