@@ -37,6 +37,7 @@ export default class Feedback extends React.Component {
       <div>
         <h1>Feedback</h1>
         <Header />
+        <h2 data-testid="feedback-text">Esse foi o seu Resultado no Jogo</h2>
         <button
           type="button"
           data-testid="btn-play-again"
