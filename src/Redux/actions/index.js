@@ -1,6 +1,6 @@
 export const USER_TOKEN = 'USER_TOKEN';
-export const SET_TIME = 'SET_TIME';
 export const USER_SCORE = 'USER_SCORE';
+export const SET_TIME = 'SET_TIME';
 export const USER_IMG = 'USER_IMG';
 
 export const userToken = (value = {}) => ({
@@ -12,11 +12,11 @@ export const userToken = (value = {}) => ({
   },
 });
 
-export const userScore = (value = 0) => ({
+export const userScore = (payload) => ({
   type: USER_SCORE,
-  payload: value,
+  payload,
+  rightQuestion: 1,
 });
-
 export const userImg = (payload) => ({
   type: USER_IMG,
   payload,

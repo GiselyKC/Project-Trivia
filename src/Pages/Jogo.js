@@ -50,18 +50,23 @@ class Jogo extends Component {
 
   render() {
     const { results, render } = this.state;
+    const { history } = this.props;
+
     return (
       <div>
-        <h1>Jogo</h1>
-        <Header />
-        {render && results.length > 0
-          ? <CardGame results={ results } /> : <p>Loading...</p>}
+        <div>
+          <h1>Jogo</h1>
+          <Header />
+          {render && results.length > 0
+            ? <CardGame history={ history } results={ results } /> : <p>Loading...</p>}
+        </div>
       </div>
     );
   }
 }
 
 Jogo.propTypes = {
+  history: PropTypes.objectOf.isRequired,
   tokenUser: PropTypes.func.isRequired,
 };
 

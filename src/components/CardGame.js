@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
-import './Jogo.css';
 
 class CardGame extends Component {
 state = {
@@ -13,6 +12,7 @@ state = {
   card: {},
   score: 0,
   nextTime: false,
+  disabled: true,
 }
 
 componentDidMount() {
@@ -20,12 +20,6 @@ componentDidMount() {
     shufleArray: this.arrayOriginal(),
   });
 }
-
-  questionOnClick = ({ target }) => {
-    if (target.id === 'correct') {
-      target.className = 'correctQuestion';
-    } target.className = 'wrongQuestion';
-  }
 
   arrayOriginal = () => {
     const { indexCard } = this.state;
@@ -50,13 +44,21 @@ componentDidMount() {
   }
 
   handleClick = () => {
-    const seconds = 10;
+    const { indexCard } = this.state;
+    const { history } = this.props;
+    const lastCard = 4;
+    this.setState({
+      disabled: true,
+    });
+    if (indexCard === lastCard) {
+      history.push('/feedback');
+    }
+    const seconds = 30;
     const { dispatchSetTime } = this.props;
     dispatchSetTime(seconds);
     this.setState({
       nextTime: true,
     });
-    const { indexCard } = this.state;
     this.setState({
       indexCard: indexCard + 1,
     }, () => this.setState({
@@ -66,8 +68,8 @@ componentDidMount() {
 
   handleClickQuestions = async ({ target: { value } }) => {
     const { score, card: { difficulty } } = this.state;
-    const { name, picture, scoreGameDispatch } = this.props;
-    const timer = 10;
+    const { name, picture, scoreGameDispatch, time } = this.props;
+    const timer = time;
     const NUMBER = 10;
     const difficultyQuestion = { easy: 1, medium: 2, hard: 3 };
     const scoreQuestions = NUMBER + (timer * difficultyQuestion[difficulty]);
@@ -75,6 +77,9 @@ componentDidMount() {
       scoreGameDispatch(scoreQuestions);
       this.setState({ score: score + scoreQuestions });
     }
+    this.setState({
+      disabled: false,
+    });
     const returnLS = returnLocalStorage('ranking');
     saveLocalStorage('ranking', [...returnLS, {
       name,
@@ -89,7 +94,7 @@ componentDidMount() {
   }
 
   render() {
-    const { shufleArray, card, nextTime } = this.state;
+    const { shufleArray, card, nextTime, disabled } = this.state;
     const { time } = this.props;
     return (
       <div>
@@ -114,20 +119,17 @@ componentDidMount() {
             if (question.dataTest === 'correct_answer') {
               return (
                 <button
-                  id="correct"
                   data-testid="correct-answer"
                   type="button"
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
-                  // onClick={ this.questionOnClick }
                 >
                   { question.answer }
                 </button>
               );
             } return (
               <button
-                id="wrong"
                 data-testid={ question.dataTest }
                 // onClick={ this.questionOnClick }
                 type="button"
@@ -141,7 +143,15 @@ componentDidMount() {
             );
           })}
         </div>
-        <button type="button" onClick={ this.handleClick }> Próximo</button>
+        {(!disabled || this.buttonDisable()) && (
+          <button
+            data-testid="btn-next"
+            type="button"
+            onClick={ this.handleClick }
+          >
+            Next
+          </button>
+        )}
       </div>
     );
   }
@@ -149,9 +159,12 @@ componentDidMount() {
 
 CardGame.propTypes = {
   dispatchSetTime: PropTypes.func.isRequired,
-  results: PropTypes.arrayOf.isRequired,
+  history: PropTypes.objectOf({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
   name: PropTypes.string.isRequired,
   picture: PropTypes.string.isRequired,
+  results: PropTypes.arrayOf().isRequired,
   scoreGameDispatch: PropTypes.number.isRequired,
   time: PropTypes.number.isRequired,
 };
