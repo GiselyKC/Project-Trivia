@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import md5 from 'crypto-js/md5';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
+import './CardGame.css';
 
 class CardGame extends Component {
 state = {
@@ -13,6 +15,7 @@ state = {
   score: 0,
   nextTime: false,
   disabled: true,
+  buttonClickDisable: false,
 }
 
 componentDidMount() {
@@ -49,6 +52,7 @@ componentDidMount() {
     const lastCard = 4;
     this.setState({
       disabled: true,
+      buttonClickDisable: false,
     });
     if (indexCard === lastCard) {
       history.push('/feedback');
@@ -66,7 +70,16 @@ componentDidMount() {
     }));
   }
 
+  // changeClassQuestion = (element) => {
+  //   const { trueQuestion, wrongQuestion } = this.state;
+  //   if (trueQuestion) element.classList.add('correct');
+  //   if (!trueQuestion) element.classList.remove('correct');
+  //   if (wrongQuestion) element.classList.add('wrong');
+  //   if (!wrongQuestion) element.classList.remove('wrong');
+  // };
+
   handleClickQuestions = async ({ target: { value } }) => {
+    this.setState({ buttonClickDisable: true });
     const { score, card: { difficulty } } = this.state;
     const { name, picture, scoreGameDispatch, time } = this.props;
     const timer = time;
@@ -83,14 +96,15 @@ componentDidMount() {
     const returnLS = returnLocalStorage('ranking');
     saveLocalStorage('ranking', [...returnLS, {
       name,
-      picture,
+      picture: `https://www.gravatar.com/avatar/${picture}`,
       score,
     }]);
   }
 
   buttonDisable = () => {
     const { time } = this.props;
-    return (time === 0);
+    const { buttonClickDisable } = this.state;
+    return (time === 0 || buttonClickDisable);
   }
 
   render() {
@@ -170,7 +184,7 @@ CardGame.propTypes = {
 };
 const mapStateToProps = (state) => ({
   name: state.player.name,
-  picture: state.player.gravatarEmail,
+  picture: md5(state.player.gravatarEmail).toString(),
   time: state.time,
 });
 const mapDispatchToProps = (dispatch) => ({
