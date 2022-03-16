@@ -22,6 +22,11 @@ class Ranking extends Component {
     });
   }
 
+  getRaking = () => {
+    const getlocalStorage = returnLocalStorage('ranking');
+    console.log(getlocalStorage);
+  };
+
   handleButton = (event) => {
     event.preventDefault();
     this.setState({
@@ -32,6 +37,8 @@ class Ranking extends Component {
   render() {
     const { handleButton } = this;
     const { redirect, rankingList } = this.state;
+    const { redirect } = this.state;
+    this.getRaking();
 
     if (redirect) {
       return <Redirect to="/" />;
