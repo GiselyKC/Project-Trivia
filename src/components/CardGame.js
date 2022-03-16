@@ -67,10 +67,11 @@ componentDidMount() {
   }
 
   handleClickQuestions = async ({ target: { value } }) => {
-    const { score, card: { difficulty } } = this.state;
+    const { score, indexCard, card: { difficulty } } = this.state;
     const { name, picture, scoreGameDispatch, time } = this.props;
     const timer = time;
     const NUMBER = 10;
+    const lastCard = 4;
     const difficultyQuestion = { easy: 1, medium: 2, hard: 3 };
     const scoreQuestions = NUMBER + (timer * difficultyQuestion[difficulty]);
     if (value === 'correct-answer') {
@@ -81,11 +82,13 @@ componentDidMount() {
       disabled: false,
     });
     const returnLS = returnLocalStorage('ranking');
-    saveLocalStorage('ranking', [...returnLS, {
-      name,
-      picture,
-      score,
-    }]);
+    if (indexCard === lastCard) {
+      saveLocalStorage('ranking', [...returnLS, {
+        name,
+        picture,
+        score,
+      }]);
+    }
   }
 
   buttonDisable = () => {
@@ -95,6 +98,7 @@ componentDidMount() {
 
   render() {
     const { shufleArray, card, nextTime, disabled } = this.state;
+    console.log(shufleArray);
     const { time } = this.props;
     return (
       <div>
