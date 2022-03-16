@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import md5 from 'crypto-js/md5';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
+import './CardGame.css';
+
+const CORRECT_ANSWER = 'correct-answer';
 
 class CardGame extends Component {
 state = {
@@ -13,6 +17,7 @@ state = {
   score: 0,
   nextTime: false,
   disabled: true,
+  buttonClickDisable: false,
 }
 
 componentDidMount() {
@@ -38,7 +43,7 @@ componentDidMount() {
     const randomNumber = 0.5;
     // console.log([...card.incorrect_answers, { correct: card.correct_answer }]);
     const allQuestions = [...incorrects,
-      { answer: card.correct_answer, dataTest: 'correct-answer' }]
+      { answer: card.correct_answer, dataTest: CORRECT_ANSWER }]
       .sort(() => Math.random() - randomNumber);
     return allQuestions;
   }
@@ -49,6 +54,7 @@ componentDidMount() {
     const lastCard = 4;
     this.setState({
       disabled: true,
+      buttonClickDisable: false,
     });
     if (indexCard === lastCard) {
       history.push('/feedback');
@@ -67,13 +73,14 @@ componentDidMount() {
   }
 
   handleClickQuestions = async ({ target: { value } }) => {
+    this.setState({ buttonClickDisable: true });
     const { score, card: { difficulty } } = this.state;
     const { name, picture, scoreGameDispatch, time } = this.props;
     const timer = time;
     const NUMBER = 10;
     const difficultyQuestion = { easy: 1, medium: 2, hard: 3 };
     const scoreQuestions = NUMBER + (timer * difficultyQuestion[difficulty]);
-    if (value === 'correct-answer') {
+    if (value === CORRECT_ANSWER) {
       scoreGameDispatch(scoreQuestions);
       this.setState({ score: score + scoreQuestions });
     }
@@ -83,14 +90,15 @@ componentDidMount() {
     const returnLS = returnLocalStorage('ranking');
     saveLocalStorage('ranking', [...returnLS, {
       name,
-      picture,
+      picture: `https://www.gravatar.com/avatar/${picture}`,
       score,
     }]);
   }
 
   buttonDisable = () => {
     const { time } = this.props;
-    return (time === 0);
+    const { buttonClickDisable } = this.state;
+    return (time === 0 || buttonClickDisable);
   }
 
   render() {
@@ -116,14 +124,15 @@ componentDidMount() {
         </p>
         <div data-testid="answer-options">
           { shufleArray.map((question) => {
-            if (question.dataTest === 'correct_answer') {
+            if (question.dataTest === CORRECT_ANSWER) {
               return (
                 <button
-                  data-testid="correct-answer"
+                  data-testid={ CORRECT_ANSWER }
                   type="button"
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
+                  className={ this.buttonDisable() ? 'correct' : null }
                 >
                   { question.answer }
                 </button>
@@ -137,6 +146,7 @@ componentDidMount() {
                 value={ question.dataTest }
                 onClick={ this.handleClickQuestions }
                 disabled={ this.buttonDisable() }
+                className={ this.buttonDisable() ? 'wrong' : null }
               >
                 { question.answer }
               </button>
@@ -170,7 +180,7 @@ CardGame.propTypes = {
 };
 const mapStateToProps = (state) => ({
   name: state.player.name,
-  picture: state.player.gravatarEmail,
+  picture: md5(state.player.gravatarEmail).toString(),
   time: state.time,
 });
 const mapDispatchToProps = (dispatch) => ({
