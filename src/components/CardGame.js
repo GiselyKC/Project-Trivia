@@ -7,6 +7,8 @@ import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
 import './CardGame.css';
 
+const CORRECT_ANSWER = 'correct-answer';
+
 class CardGame extends Component {
 state = {
   shufleArray: [],
@@ -41,7 +43,7 @@ componentDidMount() {
     const randomNumber = 0.5;
     // console.log([...card.incorrect_answers, { correct: card.correct_answer }]);
     const allQuestions = [...incorrects,
-      { answer: card.correct_answer, dataTest: 'correct-answer' }]
+      { answer: card.correct_answer, dataTest: CORRECT_ANSWER }]
       .sort(() => Math.random() - randomNumber);
     return allQuestions;
   }
@@ -70,14 +72,6 @@ componentDidMount() {
     }));
   }
 
-  // changeClassQuestion = (element) => {
-  //   const { trueQuestion, wrongQuestion } = this.state;
-  //   if (trueQuestion) element.classList.add('correct');
-  //   if (!trueQuestion) element.classList.remove('correct');
-  //   if (wrongQuestion) element.classList.add('wrong');
-  //   if (!wrongQuestion) element.classList.remove('wrong');
-  // };
-
   handleClickQuestions = async ({ target: { value } }) => {
     this.setState({ buttonClickDisable: true });
     const { score, card: { difficulty } } = this.state;
@@ -86,7 +80,7 @@ componentDidMount() {
     const NUMBER = 10;
     const difficultyQuestion = { easy: 1, medium: 2, hard: 3 };
     const scoreQuestions = NUMBER + (timer * difficultyQuestion[difficulty]);
-    if (value === 'correct-answer') {
+    if (value === CORRECT_ANSWER) {
       scoreGameDispatch(scoreQuestions);
       this.setState({ score: score + scoreQuestions });
     }
@@ -130,14 +124,15 @@ componentDidMount() {
         </p>
         <div data-testid="answer-options">
           { shufleArray.map((question) => {
-            if (question.dataTest === 'correct_answer') {
+            if (question.dataTest === CORRECT_ANSWER) {
               return (
                 <button
-                  data-testid="correct-answer"
+                  data-testid={ CORRECT_ANSWER }
                   type="button"
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
+                  className={ this.buttonDisable() ? 'correct' : null }
                 >
                   { question.answer }
                 </button>
@@ -151,6 +146,7 @@ componentDidMount() {
                 value={ question.dataTest }
                 onClick={ this.handleClickQuestions }
                 disabled={ this.buttonDisable() }
+                className={ this.buttonDisable() ? 'wrong' : null }
               >
                 { question.answer }
               </button>
