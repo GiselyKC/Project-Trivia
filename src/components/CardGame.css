@@ -1,0 +1,9 @@
+.correct:focus {
+  border: 3px solid rgb(6, 240, 15);
+}
+
+.incorrect:focus {
+  border: 3px solid red;
+}
+
+/* https://pt.stackoverflow.com/questions/299336/clicar-no-bot%C3%A3o-e-mudar-a-cor-de-fundo */

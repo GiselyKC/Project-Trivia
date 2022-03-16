@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
+import './CardGame.css';
 
 class CardGame extends Component {
 state = {
@@ -124,6 +125,7 @@ componentDidMount() {
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
+                  className={ this.handleClickQuestions ? 'correct' : null }
                 >
                   { question.answer }
                 </button>
@@ -137,6 +139,7 @@ componentDidMount() {
                 value={ question.dataTest }
                 onClick={ this.handleClickQuestions }
                 disabled={ this.buttonDisable() }
+                className={ this.handleClickQuestions ? 'incorrect' : null }
               >
                 { question.answer }
               </button>
