@@ -73,11 +73,13 @@ componentDidMount() {
   }
 
   handleClickQuestions = async ({ target: { value } }) => {
+    const { score, indexCard, card: { difficulty } } = this.state;
     this.setState({ buttonClickDisable: true });
     const { score, card: { difficulty } } = this.state;
     const { name, picture, scoreGameDispatch, time } = this.props;
     const timer = time;
     const NUMBER = 10;
+    const lastCard = 4;
     const difficultyQuestion = { easy: 1, medium: 2, hard: 3 };
     const scoreQuestions = NUMBER + (timer * difficultyQuestion[difficulty]);
     if (value === CORRECT_ANSWER) {
@@ -88,6 +90,13 @@ componentDidMount() {
       disabled: false,
     });
     const returnLS = returnLocalStorage('ranking');
+    if (indexCard === lastCard) {
+      saveLocalStorage('ranking', [...returnLS, {
+        name,
+        picture,
+        score,
+      }]);
+    }
     saveLocalStorage('ranking', [...returnLS, {
       name,
       picture: `https://www.gravatar.com/avatar/${picture}`,
@@ -103,6 +112,7 @@ componentDidMount() {
 
   render() {
     const { shufleArray, card, nextTime, disabled } = this.state;
+    console.log(shufleArray);
     const { time } = this.props;
     return (
       <div>
