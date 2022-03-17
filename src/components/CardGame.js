@@ -92,15 +92,10 @@ componentDidMount() {
     if (indexCard === lastCard) {
       saveLocalStorage('ranking', [...returnLS, {
         name,
-        picture,
+        picture: `https://www.gravatar.com/avatar/${picture}`,
         score,
       }]);
     }
-    saveLocalStorage('ranking', [...returnLS, {
-      name,
-      picture: `https://www.gravatar.com/avatar/${picture}`,
-      score,
-    }]);
   }
 
   buttonDisable = () => {
