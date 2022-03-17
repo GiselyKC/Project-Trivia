@@ -75,7 +75,6 @@ componentDidMount() {
   handleClickQuestions = async ({ target: { value } }) => {
     const { score, indexCard, card: { difficulty } } = this.state;
     this.setState({ buttonClickDisable: true });
-    const { score, card: { difficulty } } = this.state;
     const { name, picture, scoreGameDispatch, time } = this.props;
     const timer = time;
     const NUMBER = 10;
