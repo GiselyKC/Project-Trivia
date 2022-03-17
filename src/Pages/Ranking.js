@@ -36,7 +36,6 @@ class Ranking extends Component {
   render() {
     const { handleButton } = this;
     const { redirect, rankingList } = this.state;
-    const { redirect } = this.state;
     this.getRaking();
 
     if (redirect) {
@@ -49,13 +48,14 @@ class Ranking extends Component {
         {
           rankingList.map((ranking, index) => (
             <>
+              {console.log(ranking)}
               <img
                 src={ ranking.picture }
                 alt="user"
                 key={ index }
               />
-              <p data-testid="player-name-{index}">{ranking.name}</p>
-              <p data-testid="player-score-{index}">{ ranking.score}</p>
+              <p data-testid={ `"player-name"-${index}` }>{ranking.name}</p>
+              <p data-testid={ `"player-score"-${index}` }>{ranking.score}</p>
             </>
           ))
         }
