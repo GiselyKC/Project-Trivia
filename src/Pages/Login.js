@@ -59,7 +59,6 @@ class Login extends Component {
     }
     return (
       <main className="container">
-        {/* <div className="container-login"> */}
         <div className="wrap-login">
           <form className="login-form">
             <img className="App-logo" src={ logo } alt="logo trivia" />
@@ -106,7 +105,6 @@ class Login extends Component {
             </div>
           </form>
         </div>
-        {/* </div> */}
       </main>
     );
   }

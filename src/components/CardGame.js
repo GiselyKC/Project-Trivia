@@ -106,71 +106,80 @@ componentDidMount() {
     const { shufleArray, card, nextTime, disabled } = this.state;
     const { time } = this.props;
     return (
-      <div>
-        <h1>CardGame</h1>
+      <article className="wrap-card">
         {
           time === 0
-            ? <strong><h2>TEMPO ESGOTADO</h2></strong>
+            ? <strong><h3>TEMPO ESGOTADO</h3></strong>
             : <Timer newTimer={ nextTime } />
         }
-        <p
-          data-testid="question-category"
-        >
-          { card.category }
-        </p>
-        { card.correct_answer === 'Dirk the Daring' ? (
-          <p data-testid="question-text">
-            {card.question}
-          </p>)
-          : (
-            <p
-              data-testid="question-text"
-              dangerouslySetInnerHTML={ { __html: sanitizeHtml(card.question) } }
-            />
-          )}
-        <div data-testid="answer-options">
-          { shufleArray.map((question) => {
-            if (question.dataTest === CORRECT_ANSWER) {
-              return (
+        <div className="wrap-category">
+          <p
+            data-testid="question-category"
+          >
+            { card.category }
+          </p>
+        </div>
+        <div className="wrap-question-answer">
+          <div className="wrap-question">
+            { card.correct_answer === 'Dirk the Daring' ? (
+              <p data-testid="question-text">
+                {card.question}
+              </p>)
+              : (
+                <p
+                  data-testid="question-text"
+                  dangerouslySetInnerHTML={ { __html: sanitizeHtml(card.question) } }
+                />
+              )}
+          </div>
+          <div className="wrap-answer" data-testid="answer-options">
+            { shufleArray.map((question) => {
+              if (question.dataTest === CORRECT_ANSWER) {
+                return (
+                  <button
+                    data-testid={ CORRECT_ANSWER }
+                    id="answer-btn"
+                    type="button"
+                    value={ question.dataTest }
+                    onClick={ this.handleClickQuestions }
+                    disabled={ this.buttonDisable() }
+                    className={ this.buttonDisable() ? 'correct-btn' : null }
+                    dangerouslySetInnerHTML={ { __html: sanitizeHtml(question.answer) } }
+                  >
+                    {/* { question.answer } */}
+                  </button>
+                );
+              } return (
                 <button
-                  data-testid={ CORRECT_ANSWER }
+                  data-testid={ question.dataTest }
+                  id="answer-btn"
                   type="button"
+                  key={ question.key }
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
-                  className={ this.buttonDisable() ? 'correct' : null }
+                  className={ this.buttonDisable() ? 'wrong-btn' : null }
                   dangerouslySetInnerHTML={ { __html: sanitizeHtml(question.answer) } }
                 >
                   {/* { question.answer } */}
                 </button>
               );
-            } return (
-              <button
-                data-testid={ question.dataTest }
-                // onClick={ this.questionOnClick }
-                type="button"
-                key={ question.key }
-                value={ question.dataTest }
-                onClick={ this.handleClickQuestions }
-                disabled={ this.buttonDisable() }
-                className={ this.buttonDisable() ? 'wrong' : null }
-                dangerouslySetInnerHTML={ { __html: sanitizeHtml(question.answer) } }
-              >
-                {/* { question.answer } */}
-              </button>
-            );
-          })}
+            })}
+          </div>
         </div>
-        {(!disabled || this.buttonDisable()) && (
-          <button
-            data-testid="btn-next"
-            type="button"
-            onClick={ this.handleClick }
-          >
-            Next
-          </button>
-        )}
-      </div>
+        <div className="wrap-next-btn">
+          {(!disabled || this.buttonDisable()) && (
+            <button
+              data-testid="btn-next"
+              type="button"
+              onClick={ this.handleClick }
+              className="next-btn"
+            >
+              Next
+            </button>
+          )}
+        </div>
+      </article>
     );
   }
 }
