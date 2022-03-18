@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { userToken } from '../Redux/actions';
 import getRequestTrivia from '../services/api';
 import { saveLocalStorage } from '../utils/localStorage';
+import logo from '../img/trivia.png';
 
 class Login extends Component {
   state= {
@@ -57,37 +58,56 @@ class Login extends Component {
       return <Redirect to="/jogo" />;
     }
     return (
-      <form>
-        <input
-          data-testid="input-player-name"
-          name="name"
-          type="text"
-          placeholder="nome"
-          onChange={ handleChange }
-        />
-        <input
-          data-testid="input-gravatar-email"
-          name="email"
-          type="email"
-          placeholder="email"
-          onChange={ handleChange }
-        />
-        <button
-          data-testid="btn-play"
-          type="submit"
-          disabled={ disabled }
-          onClick={ handleClick }
-        >
-          Play
-        </button>
-        <button
-          data-testid="btn-settings"
-          type="button"
-          onClick={ () => history.push('/settings') }
-        >
-          Settings
-        </button>
-      </form>
+      <main className="container">
+        {/* <div className="container-login"> */}
+        <div className="wrap-login">
+          <form className="login-form">
+            <img className="App-logo" src={ logo } alt="logo trivia" />
+            <div className="wrap-input">
+              <input
+                data-testid="input-player-name"
+                name="name"
+                type="text"
+                placeholder="nome"
+                onChange={ handleChange }
+                className="input"
+              />
+            </div>
+            <div className="wrap-input">
+              <input
+                data-testid="input-gravatar-email"
+                name="email"
+                type="email"
+                placeholder="email"
+                onChange={ handleChange }
+                className="input"
+              />
+            </div>
+            <div className="container-login-form-btn">
+              <button
+                data-testid="btn-play"
+                type="submit"
+                disabled={ disabled }
+                onClick={ handleClick }
+                className="login-form-btn"
+              >
+                Play
+              </button>
+            </div>
+            <div className="container-setting-btn">
+              <button
+                data-testid="btn-settings"
+                type="button"
+                onClick={ () => history.push('/settings') }
+                className="setting-btn"
+              >
+                Settings
+              </button>
+            </div>
+          </form>
+        </div>
+        {/* </div> */}
+      </main>
     );
   }
 }

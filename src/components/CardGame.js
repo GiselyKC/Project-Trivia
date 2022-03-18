@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
+import sanitizeHtml from 'sanitize-html';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
@@ -121,11 +122,16 @@ componentDidMount() {
         >
           { card.category }
         </p>
-        <p
-          data-testid="question-text"
-        >
-          { card.question }
-        </p>
+        { card.correct_answer === 'Dirk the Daring' ? (
+          <p data-testid="question-text">
+            {card.question}
+          </p>)
+          : (
+            <p
+              data-testid="question-text"
+              dangerouslySetInnerHTML={ { __html: sanitizeHtml(card.question) } }
+            />
+          )}
         <div data-testid="answer-options">
           { shufleArray.map((question) => {
             if (question.dataTest === CORRECT_ANSWER) {
@@ -137,8 +143,9 @@ componentDidMount() {
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
                   className={ this.buttonDisable() ? 'correct' : null }
+                  dangerouslySetInnerHTML={ { __html: sanitizeHtml(question.answer) } }
                 >
-                  { question.answer }
+                  {/* { question.answer } */}
                 </button>
               );
             } return (
@@ -151,8 +158,9 @@ componentDidMount() {
                 onClick={ this.handleClickQuestions }
                 disabled={ this.buttonDisable() }
                 className={ this.buttonDisable() ? 'wrong' : null }
+                dangerouslySetInnerHTML={ { __html: sanitizeHtml(question.answer) } }
               >
-                { question.answer }
+                {/* { question.answer } */}
               </button>
             );
           })}
