@@ -3,6 +3,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Header from './Header';
+import '../components/Feedback.css';
 
 class Feedback extends React.Component {
   state = {
@@ -38,32 +39,40 @@ class Feedback extends React.Component {
     }
 
     return (
-      <div>
+      <div className="container-feedback">
         <h1>Feedback</h1>
-        <Header />
+        <div className="wrap-feedback">
+          <div className="wrap-feedback-user">
+            <Header />
 
-        {
-          ((points < numberAlternatives)
+            {
+              ((points < numberAlternatives)
             && <h2 data-testid="feedback-text">Could be better...</h2>)
-              || ((points >= numberAlternatives)
-                && <h2 data-testid="feedback-text">Well Done!</h2>)
-        }
-        <p data-testid="feedback-total-question">{points}</p>
-        <p data-testid="feedback-total-score">{score}</p>
-        <button
-          type="button"
-          data-testid="btn-play-again"
-          onClick={ handleButtonPlay }
-        >
-          Play Again
-        </button>
-        <button
-          type="button"
-          data-testid="btn-ranking"
-          onClick={ handleButtonRanking }
-        >
-          Ranking
-        </button>
+            || ((points >= numberAlternatives)
+            && <h2 data-testid="feedback-text">Well Done!</h2>)
+            }
+            <p data-testid="feedback-total-question">{`Acertos: ${points}`}</p>
+            <p data-testid="feedback-total-score">{`Pontuação: ${score}`}</p>
+          </div>
+          <div className="wrap-feedback-btn">
+            <button
+              className="feedback-btn"
+              type="button"
+              data-testid="btn-play-again"
+              onClick={ handleButtonPlay }
+            >
+              Play Again
+            </button>
+            <button
+              className="feedback-btn"
+              type="button"
+              data-testid="btn-ranking"
+              onClick={ handleButtonRanking }
+            >
+              Ranking
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

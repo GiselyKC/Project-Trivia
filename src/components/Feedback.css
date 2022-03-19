@@ -1,0 +1,70 @@
+.container-feedback {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  background-image: url('../img/portal4-feedback.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  color:white;
+  font-size: 30px;
+}
+
+.wrap-feedback {
+  border: none;
+  width: 700px;
+  margin-top: 50px;
+  border-style:dotted; margin:20px;
+  border-color: #6e786e;
+  padding-left: 50px;
+  padding-right: 50px;
+
+}
+
+.wrap-feedback-user {
+  color: #e2e7ed;
+  padding: 10px;
+  text-align:left;
+  font-weight: 700;
+}
+
+.wrap-feedback-user p {
+  padding: 6px 0;
+  font-size: 50px;
+  font-style: oblique;
+}
+
+.wrap-feedback-user h2 {
+  padding: 10px 0;
+  font-size: 70px;
+}
+
+.wrap-feedback-btn {
+  display: flex;
+  justify-content: space-around;
+  border: none;
+  padding: 30px 50px 30px 50px;
+}
+
+.feedback-btn {
+  background: linear-gradient(to left, #212224, #6e786e, #d1dada);
+  font-size: 30px;
+  font-weight: 700;
+  /* width: 40%; */
+  border-radius: 10px;
+  padding: 10px;
+  padding: 15px;
+  color:rgb(19, 27, 40);
+}
+
+.feedback-btn:hover {
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24) , 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.wrap-score p {
+  font-size: 50px;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+} 
