@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import md5 from 'crypto-js/md5';
+import sanitizeHtml from 'sanitize-html';
 import { userScore, setTime } from '../Redux/actions';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import Timer from './Timer';
 import './CardGame.css';
+
+const CORRECT_ANSWER = 'correct-answer';
 
 class CardGame extends Component {
 state = {
@@ -14,6 +18,7 @@ state = {
   score: 0,
   nextTime: false,
   disabled: true,
+  buttonClickDisable: false,
 }
 
 componentDidMount() {
@@ -39,7 +44,7 @@ componentDidMount() {
     const randomNumber = 0.5;
     // console.log([...card.incorrect_answers, { correct: card.correct_answer }]);
     const allQuestions = [...incorrects,
-      { answer: card.correct_answer, dataTest: 'correct-answer' }]
+      { answer: card.correct_answer, dataTest: CORRECT_ANSWER }]
       .sort(() => Math.random() - randomNumber);
     return allQuestions;
   }
@@ -50,6 +55,7 @@ componentDidMount() {
     const lastCard = 4;
     this.setState({
       disabled: true,
+      buttonClickDisable: false,
     });
     if (indexCard === lastCard) {
       history.push('/feedback');
@@ -68,13 +74,15 @@ componentDidMount() {
   }
 
   handleClickQuestions = async ({ target: { value } }) => {
-    const { score, card: { difficulty } } = this.state;
+    const { score, indexCard, card: { difficulty } } = this.state;
+    this.setState({ buttonClickDisable: true });
     const { name, picture, scoreGameDispatch, time } = this.props;
     const timer = time;
     const NUMBER = 10;
+    const lastCard = 4;
     const difficultyQuestion = { easy: 1, medium: 2, hard: 3 };
     const scoreQuestions = NUMBER + (timer * difficultyQuestion[difficulty]);
-    if (value === 'correct-answer') {
+    if (value === CORRECT_ANSWER) {
       scoreGameDispatch(scoreQuestions);
       this.setState({ score: score + scoreQuestions });
     }
@@ -82,80 +90,100 @@ componentDidMount() {
       disabled: false,
     });
     const returnLS = returnLocalStorage('ranking');
-    saveLocalStorage('ranking', [...returnLS, {
-      name,
-      picture,
-      score,
-    }]);
+    if (indexCard === lastCard) {
+      saveLocalStorage('ranking', [...returnLS, {
+        name,
+        picture: `https://www.gravatar.com/avatar/${picture}`,
+        score,
+      }]);
+    }
   }
 
   buttonDisable = () => {
     const { time } = this.props;
-    return (time === 0);
+    const { buttonClickDisable } = this.state;
+    return (time === 0 || buttonClickDisable);
   }
 
   render() {
     const { shufleArray, card, nextTime, disabled } = this.state;
+    console.log(shufleArray);
     const { time } = this.props;
     return (
-      <div>
-        <h1>CardGame</h1>
+      <article className="wrap-card">
         {
           time === 0
-            ? <strong><h2>TEMPO ESGOTADO</h2></strong>
+            ? <strong><h3>TEMPO ESGOTADO</h3></strong>
             : <Timer newTimer={ nextTime } />
         }
-        <p
-          data-testid="question-category"
-        >
-          { card.category }
-        </p>
-        <p
-          data-testid="question-text"
-        >
-          { card.question }
-        </p>
-        <div data-testid="answer-options">
-          { shufleArray.map((question) => {
-            if (question.dataTest === 'correct_answer') {
-              return (
+        <div className="wrap-category">
+          <p
+            data-testid="question-category"
+          >
+            { card.category }
+          </p>
+        </div>
+        <div className="wrap-question-answer">
+          <div className="wrap-question">
+            { card.correct_answer === 'Dirk the Daring' ? (
+              <p data-testid="question-text">
+                {card.question}
+              </p>)
+              : (
+                <p
+                  data-testid="question-text"
+                  dangerouslySetInnerHTML={ { __html: sanitizeHtml(card.question) } }
+                />
+              )}
+          </div>
+          <div className="wrap-answer" data-testid="answer-options">
+            { shufleArray.map((question) => {
+              if (question.dataTest === CORRECT_ANSWER) {
+                return (
+                  <button
+                    data-testid={ CORRECT_ANSWER }
+                    id="answer-btn"
+                    type="button"
+                    value={ question.dataTest }
+                    onClick={ this.handleClickQuestions }
+                    disabled={ this.buttonDisable() }
+                    className={ this.buttonDisable() ? 'correct-btn' : null }
+                    dangerouslySetInnerHTML={ { __html: sanitizeHtml(question.answer) } }
+                  >
+                    {/* { question.answer } */}
+                  </button>
+                );
+              } return (
                 <button
-                  data-testid="correct-answer"
+                  data-testid={ question.dataTest }
+                  id="answer-btn"
                   type="button"
+                  key={ question.key }
                   value={ question.dataTest }
                   onClick={ this.handleClickQuestions }
                   disabled={ this.buttonDisable() }
-                  className={ this.handleClickQuestions ? 'correct' : null }
+                  className={ this.buttonDisable() ? 'wrong-btn' : null }
+                  dangerouslySetInnerHTML={ { __html: sanitizeHtml(question.answer) } }
                 >
-                  { question.answer }
+                  {/* { question.answer } */}
                 </button>
               );
-            } return (
-              <button
-                data-testid={ question.dataTest }
-                // onClick={ this.questionOnClick }
-                type="button"
-                key={ question.key }
-                value={ question.dataTest }
-                onClick={ this.handleClickQuestions }
-                disabled={ this.buttonDisable() }
-                className={ this.handleClickQuestions ? 'incorrect' : null }
-              >
-                { question.answer }
-              </button>
-            );
-          })}
+            })}
+          </div>
         </div>
-        {(!disabled || this.buttonDisable()) && (
-          <button
-            data-testid="btn-next"
-            type="button"
-            onClick={ this.handleClick }
-          >
-            Next
-          </button>
-        )}
-      </div>
+        <div className="wrap-next-btn">
+          {(!disabled || this.buttonDisable()) && (
+            <button
+              data-testid="btn-next"
+              type="button"
+              onClick={ this.handleClick }
+              className="next-btn"
+            >
+              Next
+            </button>
+          )}
+        </div>
+      </article>
     );
   }
 }
@@ -173,7 +201,7 @@ CardGame.propTypes = {
 };
 const mapStateToProps = (state) => ({
   name: state.player.name,
-  picture: state.player.gravatarEmail,
+  picture: md5(state.player.gravatarEmail).toString(),
   time: state.time,
 });
 const mapDispatchToProps = (dispatch) => ({

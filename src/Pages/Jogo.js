@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import getRequestTrivia, { getGameTrivia } from '../services/api';
-import CardGame from '../components/CardGame';
 import Header from './Header';
 import { saveLocalStorage, returnLocalStorage } from '../utils/localStorage';
 import { userToken } from '../Redux/actions';
+import pergaminho from '../img/pergaminho.png';
+import CardGame from '../components/CardGame';
 
 class Jogo extends Component {
   state = {
@@ -53,13 +54,13 @@ class Jogo extends Component {
     const { history } = this.props;
 
     return (
-      <div>
-        <div>
-          <h1>Jogo</h1>
+      <div className="container-jogo">
+        <img className="pergaminho-card" src={ pergaminho } alt="pergaminho" />
+        <main className="container-card">
           <Header />
           {render && results.length > 0
             ? <CardGame history={ history } results={ results } /> : <p>Loading...</p>}
-        </div>
+        </main>
       </div>
     );
   }
